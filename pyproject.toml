@@ -82,7 +82,7 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/aliang8/robometer"
+Repository = "https://github.com/robometer/robometer"
 
 # ==================================================================================
 # Optional Dependencies

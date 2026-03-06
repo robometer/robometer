@@ -1,0 +1,11 @@
+# @package _global_
+
+# Robo-Dopamine GRM-2.0-8B-Preview model configuration (single-view, no goal image supported)
+reward_model: "robodopamine"
+
+model_path: "tanhuajie2001/Robo-Dopamine-GRM-2.0-8B-Preview"
+
+model_config:
+  frame_interval: 1
+  batch_size: 1
+  eval_mode: "forward"  # "incremental", "forward", or "backward"

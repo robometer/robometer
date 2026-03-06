@@ -9,10 +9,22 @@ uv run python robometer/evals/run_baseline_eval.py \
     max_frames=8 \
     model_config.batch_size=64
 
-# Robo-Dopamine (run with venv Python so vLLM is found; do not use uv run)
+# Robo-Dopamine 3B (run with venv Python so vLLM is found; do not use uv run)
 .venv-robodopamine/bin/python robometer/evals/run_baseline_eval.py \
     reward_model=robodopamine \
     model_path=tanhuajie2001/Robo-Dopamine-GRM-3B \
+    custom_eval.eval_types=[policy_ranking] \
+    custom_eval.policy_ranking=[rbm-1m-ood] \
+    custom_eval.use_frame_steps=false \
+    custom_eval.num_examples_per_quality_pr=1000 \
+    max_frames=64 \
+    model_config.batch_size=1
+
+# Robo-Dopamine 8B
+.venv-robodopamine/bin/python robometer/evals/run_baseline_eval.py \
+    reward_model=robodopamine \
+    model_path=tanhuajie2001/Robo-Dopamine-GRM-2.0-8B-Preview \
+    model_config.eval_mode=forward \
     custom_eval.eval_types=[policy_ranking] \
     custom_eval.policy_ranking=[rbm-1m-ood] \
     custom_eval.use_frame_steps=false \

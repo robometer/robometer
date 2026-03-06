@@ -3,3 +3,4 @@ __pycache__/*
 outputs/*
 unsloth_compiled_cache/*
 *.pyc
+venv_robodopamine.txt

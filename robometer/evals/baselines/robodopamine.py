@@ -2,8 +2,11 @@
 """Robo-Dopamine (GRM) baseline for progress prediction.
 
 Reference: https://github.com/FlagOpen/Robo-Dopamine
-Model: https://huggingface.co/tanhuajie2001/Robo-Dopamine-GRM-3B
-Setup: Clone Robo-Dopamine and set ROBODOPAMINE_PATH=/path/to/Robo-Dopamine
+Models:
+  - GRM-3B: https://huggingface.co/tanhuajie2001/Robo-Dopamine-GRM-3B
+  - GRM-8B: https://huggingface.co/tanhuajie2001/Robo-Dopamine-GRM-2.0-8B-Preview
+Supports single-view (same frames for all three camera inputs) and optional goal image.
+When no goal/reference is provided, a blank placeholder image is used per upstream recommendation.
 """
 
 import os
@@ -20,13 +23,19 @@ from robometer.evals.baselines.rbd_inference import GRMInference
 
 logger = get_logger()
 
+# Known model IDs for config / docs
+ROBODOPAMINE_GRM_3B = "tanhuajie2001/Robo-Dopamine-GRM-3B"
+ROBODOPAMINE_GRM_8B = "tanhuajie2001/Robo-Dopamine-GRM-2.0-8B-Preview"
+
 
 class RoboDopamine:
-    """Robo-Dopamine GRM baseline. Uses single-view frames for all three camera inputs."""
+    """Robo-Dopamine GRM baseline. Uses single-view frames for all three camera inputs.
+    Supports single-view without goal image (blank placeholder used for REFERENCE END).
+    """
 
     def __init__(
         self,
-        model_path: str = "tanhuajie2001/Robo-Dopamine-GRM-3B",
+        model_path: str = ROBODOPAMINE_GRM_3B,
         frame_interval: int = 1,
         batch_size: int = 1,
         eval_mode: str = "incremental",
@@ -36,6 +45,30 @@ class RoboDopamine:
         self.batch_size = batch_size
         self.eval_mode = eval_mode
         self._grm = GRMInference(model_path=model_path, max_image_num=8)
+
+    def _make_blank_goal_image(self, out_path: Path, height: int = 224, width: int = 224) -> None:
+        """Write a neutral gray placeholder image for 'no goal' single-view setting."""
+        blank = np.full((height, width, 3), 128, dtype=np.uint8)
+        cv2.imwrite(str(out_path), cv2.cvtColor(blank, cv2.COLOR_RGB2BGR))
+
+    def _goal_image_path(
+        self, tmpdir: Path, frames_dir: Path, num_frames: int, reference_video_path: Optional[str]
+    ) -> Optional[str]:
+        """Resolve goal image path: reference video last frame, or blank placeholder when none."""
+        if reference_video_path and os.path.exists(reference_video_path):
+            cap = cv2.VideoCapture(reference_video_path)
+            if cap.isOpened():
+                cap.set(cv2.CAP_PROP_POS_FRAMES, max(0, int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1))
+                ok, frame = cap.read()
+                cap.release()
+                if ok and frame is not None:
+                    goal_path = tmpdir / "goal_from_reference.png"
+                    cv2.imwrite(str(goal_path), frame, [int(cv2.IMWRITE_PNG_COMPRESSION), 3])
+                    return str(goal_path)
+        # Single-view without goal: use blank placeholder per upstream recommendation
+        blank_path = tmpdir / "blank_goal.png"
+        self._make_blank_goal_image(blank_path)
+        return str(blank_path)
 
     def compute_progress(
         self,
@@ -48,7 +81,8 @@ class RoboDopamine:
 
         num_frames = frames_array.shape[0]
         with tempfile.TemporaryDirectory() as tmpdir:
-            frames_dir = Path(tmpdir) / "frames"
+            tmpdir_path = Path(tmpdir)
+            frames_dir = tmpdir_path / "frames"
             frames_dir.mkdir(parents=True, exist_ok=True)
             for i in range(num_frames):
                 frame = frames_array[i]
@@ -61,12 +95,12 @@ class RoboDopamine:
                     [int(cv2.IMWRITE_PNG_COMPRESSION), 3],
                 )
 
-            out_root = Path(tmpdir) / "out"
+            out_root = tmpdir_path / "out"
             out_root.mkdir(parents=True, exist_ok=True)
-            # run_pipeline accepts either: (1) a dir of .png files (sorted by name), or (2) a video path (.mp4).
-            # We pass a directory of frame_000000.png, frame_000001.png, ...
-            # frame_interval: step between sampled frames (0, interval, 2*interval, ...; last frame always included).
-            # So frame_interval=1 uses every frame; frame_interval=5 uses every 5th frame.
+            goal_image = self._goal_image_path(
+                tmpdir_path, frames_dir, num_frames, reference_video_path
+            )
+            # run_pipeline: single-view = same dir for all cams; no-goal = blank placeholder
             run_root = self._grm.run_pipeline(
                 cam_high_path=str(frames_dir),
                 cam_left_path=str(frames_dir),
@@ -75,7 +109,7 @@ class RoboDopamine:
                 task=task_description,
                 frame_interval=self.frame_interval,
                 batch_size=self.batch_size,
-                goal_image=None,
+                goal_image=goal_image,
                 eval_mode=self.eval_mode,
                 visualize=False,
             )

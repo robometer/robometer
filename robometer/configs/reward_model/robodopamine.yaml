@@ -1,6 +1,7 @@
 # @package _global_
 
-# Robo-Dopamine GRM model configuration
+# Robo-Dopamine GRM-3B model configuration (single-view, no goal image supported)
+# For GRM-8B use: reward_model/robodopamine_8b.yaml or override model_path
 reward_model: "robodopamine"
 
 model_path: "tanhuajie2001/Robo-Dopamine-GRM-3B"
@@ -8,4 +9,4 @@ model_path: "tanhuajie2001/Robo-Dopamine-GRM-3B"
 model_config:
   frame_interval: 1
   batch_size: 1
-  eval_mode: "incremental"
+  eval_mode: "incremental"  # "incremental", "forward", or "backward"
