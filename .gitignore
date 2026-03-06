@@ -1,0 +1,5 @@
+__pycache__/*
+.venv-robodopamine/*
+outputs/*
+unsloth_compiled_cache/*
+*.pyc
