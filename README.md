@@ -73,8 +73,8 @@ Inference runs a **pretrained RBM model** on your own videos to get per-frame pr
 
 **Pretrained models (Hugging Face):**
 
-- **[Robometer-4B](https://huggingface.co/aliangdw/Robometer-4B)** — general-purpose, trained on RBM-1M
-- **[Robometer-4B-LIBERO](https://huggingface.co/aliangdw/Robometer-4B-LIBERO)** — LIBERO-10 / Spatial / Object / Goal
+- **[Robometer-4B](https://huggingface.co/robometer/Robometer-4B)** — general-purpose, trained on RBM-1M
+- ~~**[Robometer-4B-LIBERO](https://huggingface.co/aliangdw/Robometer-4B-LIBERO)** — LIBERO-10 / Spatial / Object / Goal~~ removed because the standard Robometer model is already trained on LIBERO 10/Spatial/Object/Goal+failures and simply performs better than the version trained exclusively on LIBERO
 
 ### Inference via HTTP server
 
