@@ -57,7 +57,7 @@ uv run python robometer/evals/run_baseline_eval.py \
 # Robometer-4B
 uv run python robometer/evals/run_baseline_eval.py \
     reward_model=rbm \
-    model_path=aliangdw/Robometer-4B \
+    model_path=robometer/Robometer-4B \
     custom_eval.eval_types=[policy_ranking] \
     custom_eval.policy_ranking=[rbm-1m-ood] \
     custom_eval.use_frame_steps=false \
@@ -65,7 +65,7 @@ uv run python robometer/evals/run_baseline_eval.py \
     max_frames=8 \
     model_config.batch_size=32
 
-# Robometer-4B Libero Ablation
+# Robometer-4B Libero Ablation (only trained on LIBERO datasets, so don't recommend using this model for actual reward modeling.)
 uv run python robometer/evals/run_baseline_eval.py \
     reward_model=rbm \
     model_path=aliangdw/Robometer-4B-LIBERO \

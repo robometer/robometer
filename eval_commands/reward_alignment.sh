@@ -59,7 +59,7 @@ uv run python robometer/evals/run_baseline_eval.py \
 # Robometer-4B
 uv run python robometer/evals/run_baseline_eval.py \
     reward_model=rbm \
-    model_path=aliangdw/Robometer-4B \
+    model_path=robometer/Robometer-4B \
     custom_eval.eval_types=[reward_alignment] \
     custom_eval.reward_alignment=[rbm-1m-id,rbm-1m-ood] \
     custom_eval.use_frame_steps=true \

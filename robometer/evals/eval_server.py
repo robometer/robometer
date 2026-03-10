@@ -4,7 +4,7 @@ FastAPI server to evaluate RBM model batches with a multi-GPU service layer.
 
 Usage example:
     uv run python robometer/evals/eval_server.py \
-        model_path=aliangdw/Robometer-4B \
+        model_path=robometer/Robometer-4B \
         batch_size=16 \
         num_gpus=1 \
         server_port=8001

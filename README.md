@@ -3,7 +3,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2603.02115-b31b1b.svg)](https://arxiv.org/abs/2603.02115)
 [![GitHub](https://img.shields.io/badge/GitHub-robometer-181717?logo=github)](https://github.com/robometer/robometer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Model](https://img.shields.io/badge/Model-FFD21E?logo=huggingface)](https://huggingface.co/aliangdw/Robometer-4B)
+[![Model](https://img.shields.io/badge/Model-FFD21E?logo=huggingface)](https://huggingface.co/robometer/Robometer-4B)
 [![Dataset](https://img.shields.io/badge/Dataset-RBM--1M-FFD21E?logo=huggingface)](https://huggingface.co/datasets/)
 [![RBM-1M Visualizer](https://img.shields.io/badge/Visualizer-RBM--FFD21E?logo=huggingface)](https://huggingface.co/spaces/rewardfm/visualizer)
 [![RewardEval UI](https://img.shields.io/badge/%20RewardEval%20UI-FFD21E?logo=huggingface)](https://huggingface.co/spaces/rewardfm/rewardeval_ui)
@@ -114,12 +114,10 @@ To run the model locally (loads checkpoint from Hugging Face, no server):
 
 ```bash
 uv run python scripts/example_inference_local.py \
-  --model-path aliangdw/Robometer-4B \
+  --model-path robometer/Robometer-4B \
   --video /path/to/video.mp4 \
   --task "your task description"
 ```
-
-Use `aliangdw/Robometer-4B-LIBERO` for the LIBERO-finetuned model.
 
 ---
 
@@ -165,7 +163,7 @@ See `robometer/configs/experiment_configs.py` for more config options.
 Preprocess a new dataset, LoRA fine-tune from **Robometer-4B** on your own data, upload the model to the Hub, and run inference:
 
 - **Preprocessing:** Add your dataset to the preprocess config and run the preprocessor; for raw videos (e.g. [MINT-SJTU/RoboFAC-dataset](https://huggingface.co/datasets/MINT-SJTU/RoboFAC-dataset)), convert to RBM format first via `dataset_upload`, then preprocess.
-- **Fine-tuning:** Set `model.use_peft=true` and `training.resume_from_checkpoint=aliangdw/Robometer-4B`, then train on your dataset.
+- **Fine-tuning:** Set `model.use_peft=true` and `training.resume_from_checkpoint=robometer/Robometer-4B`, then train on your dataset.
 - **Upload & inference:** Use `robometer/utils/upload_to_hub.py` to push checkpoints; run `scripts/example_inference_local.py` with your Hub model.
 
 Full step-by-step: **[FINETUNE_ROBOMETER.md](FINETUNE_ROBOMETER.md)**.
@@ -185,7 +183,7 @@ Run RBM with `reward_model=rbm`; override `model_path` and `custom_eval.*` as ne
 ```bash
 uv run python robometer/evals/run_baseline_eval.py \
     reward_model=rbm \
-    model_path=aliangdw/Robometer-4B \
+    model_path=robometer/Robometer-4B \
     custom_eval.eval_types=[reward_alignment] \
     custom_eval.reward_alignment=[rbm-1m-id,rbm-1m-ood] \
     custom_eval.use_frame_steps=true \
@@ -200,7 +198,7 @@ uv run python robometer/evals/run_baseline_eval.py \
 ```bash
 uv run python robometer/evals/run_baseline_eval.py \
     reward_model=rbm \
-    model_path=aliangdw/Robometer-4B \
+    model_path=robometer/Robometer-4B \
     custom_eval.eval_types=[policy_ranking] \
     custom_eval.policy_ranking=[rbm-1m-ood] \
     custom_eval.use_frame_steps=false \
@@ -214,7 +212,7 @@ uv run python robometer/evals/run_baseline_eval.py \
 ```bash
 uv run python robometer/evals/run_baseline_eval.py \
     reward_model=rbm \
-    model_path=aliangdw/Robometer-4B \
+    model_path=robometer/Robometer-4B \
     custom_eval.eval_types=[confusion_matrix] \
     custom_eval.confusion_matrix=[[aliangdw_usc_franka_policy_ranking_usc_franka_policy_ranking,jesbu1_utd_so101_clean_policy_ranking_top_utd_so101_clean_policy_ranking_top,aliangdw_usc_xarm_policy_ranking_usc_xarm_policy_ranking]] \
     max_frames=4 \

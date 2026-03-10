@@ -10,7 +10,7 @@ The baseline evaluation system supports:
 - **RL-VLM-F**: Preference comparison via Vision-Language Models (Gemini or OpenAI)
 - **VLAC**: Progress prediction using the VLAC model
 - **Robometer (RBM)**: Progress prediction and preference comparison using trained Robometer checkpoints:
-  - **aliangdw/Robometer-4B** – general-purpose model
+  - **robometer/Robometer-4B** – general-purpose model
   - **aliangdw/Robometer-4B-LIBERO** – LIBERO-focused variant
 - **Robo-Dopamine (GRM)**: Progress prediction using Robo-Dopamine GRM (separate venv; see setup below)
 - **ReWiND**: Progress prediction and preference using ReWiND checkpoints (same interface as RBM)
@@ -85,7 +85,7 @@ The **Robo-Dopamine GRM** baseline is built on [Robo-Dopamine](https://github.co
 For **Robometer** or **ReWiND** (`reward_model=rbm` or `reward_model=rewind`), provide:
 
 1. **`model_path`**: Hugging Face repo ID or local checkpoint path.
-   - **Robometer**: `aliangdw/Robometer-4B` (general) or `aliangdw/Robometer-4B-LIBERO` (LIBERO).
+   - **Robometer**: `robometer/Robometer-4B` (general) or `aliangdw/Robometer-4B-LIBERO` (LIBERO only, not recommended even for LIBERO itself as it performs worse than the general model).
    - Config is loaded automatically from the checkpoint when available.
 2. **Optional**: `model_config.batch_size` for inference batch size (default: 32).
 
@@ -142,6 +142,6 @@ To see all available datasets, check the dataset loading code or Hugging Face.
 
 1. **API Key Not Found**: Ensure `GEMINI_API_KEY` or `OPENAI_API_KEY` is set in your environment
 2. **VLAC Model Not Found**: Check that `vlac_model_path` is correct or that the Hugging Face model can be downloaded.
-3. **Robometer/RBM Model Not Found**: Use `model_path="aliangdw/Robometer-4B"` or `aliangdw/Robometer-4B-LIBERO`, or ensure your local path is correct.
+3. **Robometer/RBM Model Not Found**: Use `model_path="robometer/Robometer-4B"`, or ensure your local path is correct.
 4. **CUDA Out of Memory**: Reduce `vlac_batch_num` or `model_config.batch_size`, or use a smaller model.
 5. **Dataset Not Found**: Verify the dataset name matches exactly (including underscores and case).

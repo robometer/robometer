@@ -623,7 +623,7 @@ def main():
         epilog="Outputs: <out>.npy (rewards), <out>_success_probs.npy, <out>_progress_success.png",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("--model-path", default="aliangdw/Robometer-4B-LIBERO", help="HuggingFace model id or local checkpoint path")
+    parser.add_argument("--model-path", default="robometer/Robometer-4B", help="HuggingFace model id or local checkpoint path")
     parser.add_argument("--task-suite-name", default="libero_90", help="LIBERO task suite name")
     parser.add_argument("--task-id", default=28, type=int, help="LIBERO task id")
     parser.add_argument("--vectorized", action="store_true", help="Run in vectorized mode")

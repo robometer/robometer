@@ -2,7 +2,7 @@
 # This config is used specifically for evaluation runs
 
 # Model path to load training config from
-model_path: "aliangdw/Robometer-4B"  # or your RBM/ReWiND checkpoint
+model_path: "robometer/Robometer-4B"  # or your RBM/ReWiND checkpoint
 
 # GPU Pool settings
 num_gpus: 1  # Number of GPUs to use (null for all available)
