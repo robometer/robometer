@@ -28,7 +28,7 @@ model:
   train_language_model: true    # Whether to train the language model
   train_progress_head: true     # Whether to train the progress prediction head
   train_preference_head: true   # Whether to train the preference prediction head
-  train_success_head: false     # Whether to train the success prediction head
+  train_success_head: true # Whether to train the success prediction head
   average_temporal_patches: false # Whether to average the patches for video frames when multi_image=False
   use_per_frame_progress_token: true # Inserts <|prog_token|> after each frame for per-frame progress prediction. Requires use_multi_image=True.
   # Pooling strategy used when extracting per-frame embeddings from vision token spans (multi-image mode), when use_per_frame_progress_token=False.
