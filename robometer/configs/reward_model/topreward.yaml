@@ -1,0 +1,14 @@
+# @package _global_
+
+# TOPReward: token probabilities as zero-shot rewards (Qwen3-VL)
+# https://github.com/TOPReward/TOPReward
+reward_model: "topreward"
+
+model_path: "Qwen/Qwen3-VL-8B-Instruct"
+
+model_config:
+  max_frames: 64
+  num_prefix_samples: 15
+  reduction: "mean"
+  add_chat_template: true
+  fps: 2.0

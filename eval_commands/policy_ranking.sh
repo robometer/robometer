@@ -32,6 +32,17 @@ uv run python robometer/evals/run_baseline_eval.py \
     max_frames=64 \
     model_config.batch_size=1
 
+# TOPReward (Qwen3-VL-8B, zero-shot token-probability rewards)
+uv run python robometer/evals/run_baseline_eval.py \
+    reward_model=topreward \
+    model_path="Qwen/Qwen3-VL-8B-Instruct" \
+    custom_eval.eval_types=[policy_ranking] \
+    custom_eval.policy_ranking=[rbm-1m-ood] \
+    custom_eval.use_frame_steps=false \
+    custom_eval.num_examples_per_quality_pr=1000 \
+    max_frames=64 \
+    model_config.num_prefix_samples=15
+
 # VlAC
 uv run --extra vlac --python .venv-vlac/bin/python robometer/evals/run_baseline_eval.py \
     reward_model=vlac \

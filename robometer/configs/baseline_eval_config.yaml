@@ -6,7 +6,7 @@
 
 defaults:
   - _self_
-  - reward_model: rlvlmf  # Options: rlvlmf, gvl, vlac, rbm, rewind, roboreward, robodopamine
+  - reward_model: rlvlmf  # Options: rlvlmf, gvl, vlac, rbm, rewind, roboreward, robodopamine, topreward
 
 # Shared configuration
 # model_path is set in reward_model/*.yaml files, but can be overridden here

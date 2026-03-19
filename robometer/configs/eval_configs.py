@@ -189,14 +189,40 @@ class RoboDopamineConfig:
 
 
 @dataclass
+class TopRewardConfig:
+    """Configuration for TOPReward baseline (token-probability zero-shot rewards)."""
+
+    max_frames: int = field(
+        default=64,
+        metadata={"help": "Maximum frames per trajectory (subsampled if longer)"},
+    )
+    num_prefix_samples: int = field(
+        default=15,
+        metadata={"help": "Number of trajectory prefix lengths to evaluate for progress curve"},
+    )
+    reduction: str = field(
+        default="mean",
+        metadata={"help": "Reduction over instruction tokens: 'mean' or 'sum'"},
+    )
+    add_chat_template: bool = field(
+        default=True,
+        metadata={"help": "Use model chat template for instruction prompt"},
+    )
+    fps: float = field(
+        default=2.0,
+        metadata={"help": "Frames per second for video input to VLM"},
+    )
+
+
+@dataclass
 class BaselineEvalConfig:
     """Configuration for baseline evaluation runs (run_baseline_eval.py)."""
 
-    # Reward model discriminator: "gvl", "vlac", "rlvlmf", "rbm", "rewind", "roboreward", or "robodopamine"
+    # Reward model discriminator: "gvl", "vlac", "rlvlmf", "rbm", "rewind", "roboreward", "robodopamine", or "topreward"
     reward_model: str = field(
         default="rlvlmf",
         metadata={
-            "help": "Reward model: 'gvl', 'vlac', 'robodopamine' for progress; 'rlvlmf' for preference; 'rbm', 'rewind' for trained models; 'roboreward' for RoboReward baseline"
+            "help": "Reward model: 'gvl', 'vlac', 'robodopamine', 'topreward' for progress; 'rlvlmf' for preference; 'rbm', 'rewind' for trained models; 'roboreward' for RoboReward baseline"
         },
     )
 
@@ -260,10 +286,12 @@ class BaselineEvalConfig:
                 self.model_config = RoboRewardConfig(**(self.model_config or {}))
             elif self.reward_model == "robodopamine":
                 self.model_config = RoboDopamineConfig(**(self.model_config or {}))
+            elif self.reward_model == "topreward":
+                self.model_config = TopRewardConfig(**(self.model_config or {}))
             else:
                 raise ValueError(
                     f"Unknown reward_model: {self.reward_model}. "
-                    f"Must be 'rlvlmf', 'gvl', 'vlac', 'rbm', 'rewind', 'roboreward', or 'robodopamine'"
+                    f"Must be 'rlvlmf', 'gvl', 'vlac', 'rbm', 'rewind', 'roboreward', 'robodopamine', or 'topreward'"
                 )
 
 

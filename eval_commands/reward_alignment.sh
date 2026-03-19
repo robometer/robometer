@@ -33,6 +33,17 @@ uv run python robometer/evals/run_baseline_eval.py \
     max_frames=64 \
     model_config.batch_size=1
 
+# TOPReward (Qwen3-VL-8B, zero-shot token-probability rewards)
+uv run python robometer/evals/run_baseline_eval.py \
+    reward_model=topreward \
+    model_path="Qwen/Qwen3-VL-8B-Instruct" \
+    custom_eval.eval_types=[reward_alignment] \
+    custom_eval.reward_alignment=[rbm-1m-id,rbm-1m-ood] \
+    custom_eval.use_frame_steps=false \
+    custom_eval.reward_alignment_max_trajectories=30 \
+    max_frames=64 \
+    model_config.num_prefix_samples=15
+
 # VLAC
 uv run --extra vlac --python .venv-vlac/bin/python  robometer/evals/run_baseline_eval.py \
     reward_model=vlac \
