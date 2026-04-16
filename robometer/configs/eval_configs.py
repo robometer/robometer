@@ -35,6 +35,23 @@ class EvalServerConfig:
     server_url: str = field(default="0.0.0.0", metadata={"help": "Evaluation server URL"})
     server_port: int = field(default=8000, metadata={"help": "Evaluation server port"})
 
+    eval_max_input_frames: int = field(
+        default=50,
+        metadata={"help": "Uniform subsample cap on frame count (0 = no cap)."},
+    )
+    eval_resize_frames: bool = field(
+        default=True,
+        metadata={"help": "If true, downscale in-memory frames using longest-side + pixel cap like training."},
+    )
+    eval_max_image_side: int = field(
+        default=480,
+        metadata={"help": "Longest edge cap in pixels (same default as RBMBatchCollator / _resize_pil)."},
+    )
+    eval_max_image_pixels: int = field(
+        default=1_048_576,
+        metadata={"help": "Area cap in pixels (same default as MAX_IMAGE_PIXELS in rbm_heads)."},
+    )
+
 
 @dataclass
 class OfflineEvalConfig:

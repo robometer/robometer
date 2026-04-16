@@ -18,6 +18,10 @@ Response payload per request contains predictions grouped by head:
     "outputs_preference": {...},   # Preference logits + optional progress traces
     "outputs_progress": {...},     # Progress-only trajectories
   }
+
+Before collation, each batch is passed through ``eval_sample_normalize``: optional uniform
+frame cap and per-frame resize (longest-side + pixel cap) aligned with training
+``rbm_heads._resize_pil``. Configure via ``EvalServerConfig`` / Hydra (see eval_config_server.yaml).
 """
 
 from __future__ import annotations
@@ -47,6 +51,7 @@ from robometer.evals.eval_utils import (
     parse_npy_form_data,
     reconstruct_payload_from_npy,
 )
+from robometer.evals.eval_sample_normalize import normalize_eval_samples
 from robometer.utils.save import load_model_from_hf
 from robometer.configs.eval_configs import EvalServerConfig
 from robometer.configs.experiment_configs import ExperimentConfig
@@ -186,6 +191,10 @@ def process_batch_helper(
     is_discrete_mode: bool = False,
     num_bins: int = 10,
     use_frame_steps: bool = False,
+    eval_max_input_frames: int = 50,
+    eval_resize_frames: bool = True,
+    eval_max_image_side: int = 480,
+    eval_max_image_pixels: int = 1_048_576,
 ) -> Dict[str, Any]:
     """Synchronous batch processing on specific GPU."""
     if not batch_data:
@@ -207,6 +216,20 @@ def process_batch_helper(
                 raise ValueError(f"Unsupported sample_type: {sample_type}")
         else:
             raise ValueError(f"Unsupported sample object type: {type(sample)}")
+
+    max_f = None if eval_max_input_frames <= 0 else eval_max_input_frames
+    if max_f is not None or eval_resize_frames:
+        normalize_eval_samples(
+            input_samples,
+            max_frames=max_f,
+            resize=eval_resize_frames,
+            max_side=eval_max_image_side,
+            max_pixels=eval_max_image_pixels,
+        )
+        logger.debug(
+            f"[job {job_id}] eval input normalize max_frames={max_f} resize={eval_resize_frames} "
+            f"side={eval_max_image_side} pixels={eval_max_image_pixels}"
+        )
 
     # Handle frame steps for progress samples - expand into sub-samples, each subsampled to 4 frames
     # so they can be batched together (all same size)
@@ -335,6 +358,7 @@ class MultiGPUEvalServer:
         model_path: str,
         num_gpus: int | None = None,
         max_workers: int | None = None,
+        eval_server_cfg: EvalServerConfig | None = None,
     ):
         self.model_path = model_path
         self.num_gpus = num_gpus or torch.cuda.device_count()
@@ -343,6 +367,12 @@ class MultiGPUEvalServer:
         self._job_counter = 0
         self._completed_jobs = 0
         self._active_jobs_lock = Lock()
+
+        _esc = eval_server_cfg or EvalServerConfig()
+        self.eval_max_input_frames = _esc.eval_max_input_frames
+        self.eval_resize_frames = _esc.eval_resize_frames
+        self.eval_max_image_side = _esc.eval_max_image_side
+        self.eval_max_image_pixels = _esc.eval_max_image_pixels
 
         logger.info(f"Loading experiment config and base model from {self.model_path}")
         exp_config, tokenizer, processor, reward_model = load_model_from_hf(
@@ -361,7 +391,8 @@ class MultiGPUEvalServer:
 
         logger.info(
             f"Initializing multi-GPU eval server: model_path={self.model_path} "
-            f"num_gpus={self.num_gpus} max_workers={self.max_workers}"
+            f"num_gpus={self.num_gpus} max_workers={self.max_workers} "
+            f"eval_max_input_frames={self.eval_max_input_frames} eval_resize_frames={self.eval_resize_frames}"
         )
 
         # Initialize GPU pool
@@ -471,6 +502,10 @@ class MultiGPUEvalServer:
                 is_discrete_mode,
                 num_bins,
                 use_frame_steps,
+                self.eval_max_input_frames,
+                self.eval_resize_frames,
+                self.eval_max_image_side,
+                self.eval_max_image_pixels,
             )
 
             # Update stats
@@ -611,7 +646,9 @@ def create_app(cfg: EvalServerConfig, multi_gpu_server: MultiGPUEvalServer | Non
     num_gpus = getattr(cfg, "num_gpus", None)
     max_workers = getattr(cfg, "max_workers", None)
 
-    multi_gpu_server = multi_gpu_server or MultiGPUEvalServer(cfg.model_path, num_gpus, max_workers)
+    multi_gpu_server = multi_gpu_server or MultiGPUEvalServer(
+        cfg.model_path, num_gpus, max_workers, eval_server_cfg=cfg
+    )
     logger.info(f"Multi-GPU eval server initialized with {multi_gpu_server.num_gpus} GPUs")
 
     @app.post("/evaluate_batch")
@@ -784,6 +821,7 @@ def main(cfg: DictConfig):
         model_path=eval_cfg.model_path,
         num_gpus=eval_cfg.num_gpus,
         max_workers=eval_cfg.max_workers,
+        eval_server_cfg=eval_cfg,
     )
     display_config(multi_gpu_server.exp_config)
 

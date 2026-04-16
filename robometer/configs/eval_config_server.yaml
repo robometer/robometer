@@ -12,3 +12,9 @@ max_workers: 8 # Max worker threads (null for auto, typically same as num_gpus)
 batch_size: 4  # Batch size for evaluation
 server_url: "0.0.0.0"  # Evaluation server URL
 server_port: 8000  # Evaluation server port
+
+# Cap long / high-res client videos before the collator (see robometer.evals.eval_sample_normalize)
+eval_max_input_frames: 50   # 0 = no temporal cap
+eval_resize_frames: true
+eval_max_image_side: 480
+eval_max_image_pixels: 1048576
