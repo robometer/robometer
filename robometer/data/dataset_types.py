@@ -39,6 +39,7 @@ class Trajectory(BaseModel):
         None  # Mask for partial_success: 1.0 for last frame if partial_success < 1.0, otherwise all 1.0s
     )
     metadata: Optional[Dict[str, Any]] = None
+    original_sampled_index: Optional[int] = None
     data_gen_strategy: Optional[str] = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

@@ -18,6 +18,7 @@ uv run python robometer/evals/run_baseline_eval.py \
     custom_eval.reward_alignment=[rbm-1m-id,rbm-1m-ood] \
     custom_eval.use_frame_steps=false \
     custom_eval.reward_alignment_max_trajectories=30 \
+    custom_eval.pad_frames=false \
     max_frames=64 \
     model_config.batch_size=1
 
@@ -30,6 +31,7 @@ uv run python robometer/evals/run_baseline_eval.py \
     custom_eval.reward_alignment=[rbm-1m-id,rbm-1m-ood] \
     custom_eval.use_frame_steps=false \
     custom_eval.reward_alignment_max_trajectories=30 \
+    custom_eval.pad_frames=false \
     max_frames=64 \
     model_config.batch_size=1
 

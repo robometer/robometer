@@ -27,8 +27,9 @@ from transformers import AutoProcessor
 from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 # Global Environment Settings
-os.environ["LOCAL_RANK"] = "0"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ.setdefault("LOCAL_RANK", "0")
+if "CUDA_VISIBLE_DEVICES" not in os.environ:
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 
 # -----------------------------
@@ -450,7 +451,7 @@ class GRMInference:
 
         self.model = LLM(
             model=model_path,
-            gpu_memory_utilization=0.9,
+            gpu_memory_utilization=0.8,
             max_model_len=8192,
             limit_mm_per_prompt={"image": max_image_num},
             enable_prefix_caching=True,

@@ -281,6 +281,7 @@ def run_reward_alignment_eval_per_trajectory(
         raw_targets = []
         traj_pred_logits = []  # For discrete mode: collect full logits
         traj_target_bins = []  # For discrete mode: collect bin indices
+        original_sampled_indices = []
 
         if not use_frame_steps:
             # Whole trajectory mode: one result with full progress prediction
@@ -292,6 +293,7 @@ def run_reward_alignment_eval_per_trajectory(
             for timestep, r in enumerate(results_for_trajectory):
                 raw_preds.append(r["progress_pred"])
                 raw_targets.append(r["target_progress"])
+                original_sampled_indices.append(r.get("original_sampled_index"))
 
         # Step 2: Convert all progress predictions and targets to continuous (if discrete mode)
         # Store logits/bins for loss computation before conversion
@@ -360,10 +362,15 @@ def run_reward_alignment_eval_per_trajectory(
                 traj_targets = tgt_array[-1:]
         else:
             # Frame steps mode
-            for timestep, (pred_array, tgt_array) in enumerate(zip(traj_preds_continuous, traj_targets_continuous)):
+            for timestep, (pred_array, tgt_array, original_sampled_index) in enumerate(zip(traj_preds_continuous, traj_targets_continuous, original_sampled_indices)):
                 if last_frame_only:
                     pred_val = pred_array[-1]
                     tgt_val = tgt_array[-1]
+                elif original_sampled_index is not None:
+                    pred_idx = min(int(original_sampled_index), len(pred_array) - 1)
+                    tgt_idx = min(int(original_sampled_index), len(tgt_array) - 1)
+                    pred_val = pred_array[pred_idx]
+                    tgt_val = tgt_array[tgt_idx]
                 else:
                     indx = min(timestep, len(pred_array) - 1)
                     pred_val = pred_array[indx]

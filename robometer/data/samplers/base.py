@@ -704,6 +704,10 @@ class RBMBaseSampler:
                 target_progress = [target_progress[idx] for idx in frame_indices_subsample]
             indices = [indices[idx] for idx in frame_indices_subsample] if isinstance(indices, list) else indices
 
+            original_sampled_index = -1
+
+        else:
+            original_sampled_index = indices[-1] # record the original last sampled time index before potential padding
         # Pad if needed
         if target_progress and pad_frames:
             if self.config.load_embeddings:
@@ -777,6 +781,7 @@ class RBMBaseSampler:
                 "partial_success": partial_success,
                 "predict_last_frame_mask": predict_last_frame_mask,
                 "metadata": metadata,
+                "original_sampled_index": original_sampled_index,
             },
         )
         return trajectory

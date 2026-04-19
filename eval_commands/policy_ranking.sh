@@ -17,6 +17,7 @@ uv run python robometer/evals/run_baseline_eval.py \
     custom_eval.policy_ranking=[rbm-1m-ood] \
     custom_eval.use_frame_steps=false \
     custom_eval.num_examples_per_quality_pr=1000 \
+    custom_eval.pad_frames=false \
     max_frames=64 \
     model_config.batch_size=1
 
@@ -29,6 +30,7 @@ uv run python robometer/evals/run_baseline_eval.py \
     custom_eval.policy_ranking=[rbm-1m-ood] \
     custom_eval.use_frame_steps=false \
     custom_eval.num_examples_per_quality_pr=1000 \
+    custom_eval.pad_frames=false \
     max_frames=64 \
     model_config.batch_size=1
 
