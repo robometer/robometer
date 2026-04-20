@@ -1,0 +1,36 @@
+# Transitive dependencies for `lerobot` **except** `pynput`.
+# On Linux, `pynput` pulls `evdev`, which often fails to compile (missing crypt.h,
+# outdated linux headers vs evdev, conda compilers, etc.). Teleop/keyboard code
+# is not needed for `LeRobotDataset` v3 create/read/push.
+#
+# Install (order matters):
+#   uv pip install -r dataset_upload/requirements_lerobot_dataset_only.txt
+#   uv pip install "lerobot==0.4.4" --no-deps
+#
+# If `import lerobot.datasets.lerobot_dataset` fails with a missing module, install
+# that module; upstream pins are in lerobot's pyproject.toml.
+#
+# Optional: same torchcodec pin as lerobot on supported platforms (often already in robometer):
+#   uv pip install "torchcodec>=0.2.1,<0.11.0"
+
+datasets>=4.0.0,<5.0.0
+diffusers>=0.27.2,<0.36.0
+huggingface-hub[hf-transfer,cli]>=0.34.2,<0.36.0
+accelerate>=1.10.0,<2.0.0
+setuptools>=71.0.0,<81.0.0
+cmake>=3.29.0.1,<4.2.0
+einops>=0.8.0,<0.9.0
+opencv-python-headless>=4.9.0,<4.13.0
+av>=15.0.0,<16.0.0
+jsonlines>=4.0.0,<5.0.0
+packaging>=24.2,<26.0
+pyserial>=3.5,<4.0
+wandb>=0.24.0,<0.25.0
+torch>=2.2.1,<2.11.0
+torchvision>=0.21.0,<0.26.0
+draccus==0.10.0
+gymnasium>=1.1.1,<2.0.0
+rerun-sdk>=0.24.0,<0.27.0
+deepdiff>=7.0.1,<9.0.0
+imageio[ffmpeg]>=2.34.0,<3.0.0
+termcolor>=2.4.0,<4.0.0

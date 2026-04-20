@@ -47,6 +47,7 @@ from robometer.configs.experiment_configs import (
 from robometer.data.collators import BaseCollator, ReWiNDBatchCollator, RBMBatchCollator
 from robometer.data.datasets import (
     RBMDataset,
+    RBMDatasetLRB3,
     StrategyFirstDataset,
     BaseDataset,
     RepeatedDataset,
@@ -1144,6 +1145,7 @@ def setup_dataset(cfg: DataConfig, is_eval: bool = False, sampler_kwargs=None, *
     """
     dataset_cls = {
         "rbm": RBMDataset,
+        "rbm_lrb3": RBMDatasetLRB3,
         "strategy_first": StrategyFirstDataset,
     }
 

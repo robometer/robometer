@@ -1,4 +1,5 @@
 from robometer.data.samplers.base import RBMBaseSampler
+from robometer.data.samplers.base_lrb3 import LeRobotLazyFramesMixin, PrefSamplerLRB3, ProgressSamplerLRB3
 from robometer.data.samplers.pref import PrefSampler
 from robometer.data.samplers.progress import ProgressSampler
 from robometer.data.samplers.eval.confusion_matrix import ConfusionMatrixSampler
@@ -9,6 +10,9 @@ from robometer.data.samplers.eval.roboarena_quality_preference import RoboArenaQ
 
 __all__ = [
     "RBMBaseSampler",
+    "LeRobotLazyFramesMixin",
+    "PrefSamplerLRB3",
+    "ProgressSamplerLRB3",
     "PrefSampler",
     "ProgressSampler",
     "ConfusionMatrixSampler",

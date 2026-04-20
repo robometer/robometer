@@ -671,33 +671,45 @@ def create_trajectory_from_dict(traj_dict: Dict[str, Any], overrides: Optional[D
 
 
 def show_available_datasets():
-    """Show which datasets are available in the cache."""
-    # The preprocessing script now creates individual cache directories for each dataset/subset pair
-    cache_dir = os.environ.get("ROBOMETER_PROCESSED_DATASETS_PATH", "")
-    if not cache_dir:
+    """Show dataset roots used for training (preprocessed Arrow cache and/or LeRobot v3)."""
+    lerobot_root = os.environ.get("ROBOMETER_LEROBOT_DATASET_ROOT", "").strip()
+    cache_dir = os.environ.get("ROBOMETER_PROCESSED_DATASETS_PATH", "").strip()
+
+    if not lerobot_root and not cache_dir:
         raise ValueError(
-            "ROBOMETER_PROCESSED_DATASETS_PATH not set. Set it to the directory containing your processed datasets."
+            "Set ROBOMETER_LEROBOT_DATASET_ROOT for LeRobot v3 training, or "
+            "ROBOMETER_PROCESSED_DATASETS_PATH for preprocessed Arrow training."
         )
 
     print("=" * 100)
-    print("Available datasets:")
+    print("Available datasets / roots:")
 
-    # List all subdirectories (individual dataset caches)
-    if os.path.exists(cache_dir):
-        subdirs = [d for d in os.listdir(cache_dir) if os.path.isdir(os.path.join(cache_dir, d))]
-        if subdirs:
-            for subdir in sorted(subdirs):
-                # Try to load dataset info
-                info_file = os.path.join(cache_dir, subdir, "dataset_info.json")
-                if os.path.exists(info_file):
-                    with open(info_file) as f:
-                        info = json.load(f)
-                    dataset_path = info.get("dataset_path", "unknown")
-                    subset = info.get("subset", "unknown")
-                    trajectories = info.get("total_trajectories", 0)
-                    print(f"   {dataset_path}/{subset}: {trajectories} trajectories")
+    if lerobot_root:
+        print(f"  [LeRobot v3] ROBOMETER_LEROBOT_DATASET_ROOT={lerobot_root}")
+        for env_key in ("ROBOMETER_LEROBOT_REPO_ID", "ROBOMETER_LEROBOT_VIDEO_KEY", "ROBOMETER_LEROBOT_MAX_EPISODES"):
+            val = os.environ.get(env_key)
+            if val:
+                print(f"  [LeRobot v3] {env_key}={val}")
+
+    if cache_dir:
+        print(f"  [Preprocessed cache] ROBOMETER_PROCESSED_DATASETS_PATH={cache_dir}")
+        if os.path.exists(cache_dir):
+            subdirs = [d for d in os.listdir(cache_dir) if os.path.isdir(os.path.join(cache_dir, d))]
+            if subdirs:
+                for subdir in sorted(subdirs):
+                    info_file = os.path.join(cache_dir, subdir, "dataset_info.json")
+                    if os.path.exists(info_file):
+                        with open(info_file) as f:
+                            info = json.load(f)
+                        dataset_path = info.get("dataset_path", "unknown")
+                        subset = info.get("subset", "unknown")
+                        trajectories = info.get("total_trajectories", 0)
+                        print(f"     {dataset_path}/{subset}: {trajectories} trajectories")
+            else:
+                print("     ❌ No dataset caches found under this path")
         else:
-            print("  ❌ No dataset caches found")
-    else:
-        print("  ❌ Cache directory does not exist")
+            print("     ❌ Cache directory does not exist")
+    elif lerobot_root:
+        print("  [Preprocessed cache] ROBOMETER_PROCESSED_DATASETS_PATH not set (LeRobot-only mode)")
+
     print("=" * 100)

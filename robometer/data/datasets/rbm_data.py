@@ -30,10 +30,18 @@ class RBMDataset(BaseDataset):
             **sampler_kwargs,
         }
 
+        pref_cls = getattr(type(self), "_pref_sampler_cls", PrefSampler)
+        prog_cls = getattr(type(self), "_progress_sampler_cls", ProgressSampler)
         if self.config.sample_type_ratio[0] > 0:
-            self.pref_sampler = PrefSampler(is_evaluation=is_evaluation, **base_sampler_kwargs)
+            self.pref_sampler = pref_cls(is_evaluation=is_evaluation, **base_sampler_kwargs)
         if self.config.sample_type_ratio[1] > 0:
-            self.progress_sampler = ProgressSampler(is_evaluation=is_evaluation, **base_sampler_kwargs)
+            self.progress_sampler = prog_cls(is_evaluation=is_evaluation, **base_sampler_kwargs)
+
+        st = getattr(self, "_lerobot_store", None)
+        if st is not None:
+            for _s in (self.pref_sampler, self.progress_sampler):
+                if _s is not None:
+                    _s._lerobot_store = st
 
         self.sample_type_ratio = config.sample_type_ratio
         self.max_samples = max_samples
