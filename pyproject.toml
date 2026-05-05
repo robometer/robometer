@@ -63,7 +63,7 @@ dependencies = [
     "torchvision",
     "moviepy",
     "wandb[media]",
-    "torchcodec<0.8",
+    "torchcodec>=0.10.0,<0.11",
     "decord>=0.6.0",
     "unsloth>=2025.10",
     "gymnasium>=1.2.2",
