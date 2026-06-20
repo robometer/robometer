@@ -920,6 +920,20 @@ def load_model_from_hf(
         exp_config.model, str(resolved_path), peft_config=peft_config
     )
     reward_model = reward_model.to(device)
+
+    # Unsloth loads models with mixed precision (e.g. float32 token embeddings and the
+    # vision patch_embed alongside bf16 linears) for training stability. That mismatch
+    # breaks inference: float32 activations flow into bf16 weights and the forward
+    # raises "expected scalar type BFloat16 but found Float" (and an analogous error in
+    # the language-model attention). Since this loader returns an eval-only model, cast
+    # every floating-point parameter to the configured dtype so the forward is
+    # dtype-consistent. Integer parameters and buffers (e.g. rotary inv_freq, which RoPE
+    # recomputes in float32) are intentionally left untouched.
+    target_dtype = getattr(torch, exp_config.model.torch_dtype, torch.bfloat16)
+    for param in reward_model.parameters():
+        if param.is_floating_point() and param.dtype != target_dtype:
+            param.data = param.data.to(target_dtype)
+
     reward_model.eval()
 
     return exp_config, tokenizer, processor, reward_model
