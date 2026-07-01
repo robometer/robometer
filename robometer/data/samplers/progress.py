@@ -151,12 +151,14 @@ class ProgressSampler(RBMBaseSampler):
             return None
 
         # Handle special cases
-        if strategy_used in [DataGenStrat.DIFFERENT_TASK, DataGenStrat.DIFFERENT_TASK_INSTRUCTION]:
-            # We need to use the original task embeddings instead of the different task embeddings
+        if strategy_used == DataGenStrat.DIFFERENT_TASK:
+            # Restore original task embeddings (video is from a different task)
             if self.config.load_embeddings and traj.get("embeddings_path"):
                 progress_traj.text_embedding = load_embeddings_from_path(traj["embeddings_path"])["text_embedding"]
             progress_traj.lang_vector = traj["lang_vector"]
             progress_traj.task = traj["task"]
+
+        if strategy_used in [DataGenStrat.DIFFERENT_TASK, DataGenStrat.DIFFERENT_TASK_INSTRUCTION]:
             progress_traj.target_progress = [0.0] * len(progress_traj.target_progress)
             if self.config.progress_loss_type.lower() == "discrete":
                 progress_traj.target_progress = convert_continuous_to_discrete_bins(
