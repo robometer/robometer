@@ -53,6 +53,7 @@ ALL_DATASOURCES = [
     "usc_koch_human_robot_paired_robot",
     "hand_paired_human",
     "hand_paired_robot",
+    "armnetbench",
 ]
 
 DATASET_CATEGORY = {
@@ -87,6 +88,10 @@ DATASET_CATEGORY = {
 }
 
 DATASET_MAP = {
+    "armnetbench_v01": {
+        "train": ["villekuosmanen_armnetbench_robometer_v01_so101"],
+        "eval": ["villekuosmanen_armnetbench_robometer_v01_so101"],
+    },
     "others": {
         "train": [
             "jesbu1_molmoact_rfm_molmoact_dataset_household",
@@ -471,6 +476,7 @@ DATA_SOURCE_CATEGORY = {
         "racer_train",
         "racer_val",
         "roboarena_eval_debug_nowrist",
+        "armnetbench",
     ],
     "franka": [
         "oxe_droid",

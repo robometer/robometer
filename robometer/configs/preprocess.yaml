@@ -20,6 +20,7 @@ train_datasets:
   - "jesbu1/racer_rfm"
   - "jesbu1/roboreward_rfm"
   - "jesbu1/roboreward_rfm_high_res"
+  - "villekuosmanen/armnetbench_robometer_v01"
 
 train_subsets:
   - ["metaworld_train"]
@@ -43,6 +44,7 @@ train_subsets:
   - ["racer_train"]
   - ["roboreward_train"]
   - ["roboreward_train"]
+  - ["so101"]
 
 eval_datasets:
   - "abraranwar/libero_rfm"

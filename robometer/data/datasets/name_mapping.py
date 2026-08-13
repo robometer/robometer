@@ -93,4 +93,6 @@ DS_SHORT_NAME_MAPPING = {
     "abraranwar_usc_koch_rewind_rfm_usc_koch_rewind": "usc_koch_rewind",
     # RoboFAC
     "aliangdw_robofac_rbm_robofac": "robofac",
+    # ArmnetBench (SO-101 eval + teleop)
+    "villekuosmanen_armnetbench_robometer_v01_so101": "armnetbench_so101",
 }
