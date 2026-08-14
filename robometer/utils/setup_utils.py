@@ -400,9 +400,6 @@ def _load_checkpoint_weights_from_safetensors(
     if not progress_head_loaded:
         logger.error("Progress head weights did not change after loading checkpoint!")
         logger.error("This indicates the checkpoint weights were not loaded correctly.")
-        import ipdb
-
-        ipdb.set_trace()  # Breakpoint if progress_head didn't load
 
     # Verify adapter weights loaded correctly only when this helper loads them.
     # If load_adapters=False, PeftModel.from_pretrained has already loaded adapters
