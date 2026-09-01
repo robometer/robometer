@@ -59,6 +59,9 @@ dependencies = [
     "seaborn",
     "bitsandbytes",
     "torch==2.8.0",  # Required for Qwen models, xformers, and modern transformers. Use CUDA build on Linux via tool.uv.sources
+    "torchao<0.18",  # unsloth_zoo requires torchao>=0.13.0, and torchao declares no torch bound of its
+                     # own, so a fresh resolve picks 0.18.0, which imports torch.nn.functional.ScalingType
+                     # (added in torch 2.9) and fails at import against the torch 2.8.0 pinned above.
     "torchvision",
     "moviepy",
     "wandb[media]",
