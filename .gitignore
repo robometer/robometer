@@ -4,4 +4,7 @@ outputs/*
 unsloth_compiled_cache/*
 venv_robodopamine.txt
 baseline_eval_output/*
+logs/*
+.venv/
+memory_log_rank*.txt
 *.py[cod]
