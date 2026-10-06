@@ -11,7 +11,6 @@ from typing import Tuple
 from robometer.data.dataset_types import PreferenceSample, ProgressSample
 from robometer.data.samplers.base import RBMBaseSampler
 from robometer.utils.distributed import rank_0_print
-from sentence_transformers import SentenceTransformer
 
 
 class ConfusionMatrixSampler(RBMBaseSampler):
@@ -35,6 +34,12 @@ class ConfusionMatrixSampler(RBMBaseSampler):
         """
         super().__init__(**kwargs)
         self.n_trajectories_per_source = n_trajectories_per_source
+
+        # Imported lazily -- sentence_transformers pulls in transformers' torchao quantizer
+        # support, which crashes on import in this venv's torch==2.8.0 (torchao>=0.18 needs
+        # torch>=2.11's torch.nn.functional.ScalingType). Deferring the import here means only
+        # code that actually instantiates this sampler pays that cost / hits that crash.
+        from sentence_transformers import SentenceTransformer
 
         # Load sentence transformer model and precompute embeddings for all unique tasks
         self.sentence_model = SentenceTransformer("sentence-transformers/all-MiniLM-L12-v2")

@@ -7,9 +7,9 @@ then saves per-frame progress and success predictions plus an optional plot.
 
 Example:
   # Start the server first (in another terminal):
-  #   uv run python robometer/evals/eval_server.py --config_path=robometer/configs/config.yaml --host=0.0.0.0 --port=8000
+  #   uv run python robometer/evals/eval_server.py --config_path=robometer/configs/config.yaml --host=0.0.0.0 --port=8020
 
-  python scripts/example_inference.py --eval-server-url http://localhost:8000 --video /path/to/video.mp4 --task "Pick up the red block"
+  python scripts/example_inference.py --eval-server-url http://localhost:8020 --video /path/to/video.mp4 --task "Pick up the red block"
 """
 
 from __future__ import annotations
@@ -391,14 +391,14 @@ def compute_rewards_per_frame(
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Get per-frame progress and success predictions from an RBM eval server.",
-        epilog="Start the server with: uv run python robometer/evals/eval_server.py --config_path=robometer/configs/config.yaml --host=0.0.0.0 --port=8000",
+        epilog="Start the server with: uv run python robometer/evals/eval_server.py --config_path=robometer/configs/config.yaml --host=0.0.0.0 --port=8020",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "--eval-server-url",
         type=str,
-        default="http://localhost:8000",
-        help="Eval server base URL (default: http://localhost:8000)",
+        default="http://localhost:8020",
+        help="Eval server base URL (default: http://localhost:8020)",
     )
     parser.add_argument(
         "--video",

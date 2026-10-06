@@ -33,7 +33,7 @@ class EvalServerConfig:
     # Evaluation parameters
     batch_size: int = field(default=4, metadata={"help": "Batch size for evaluation"})
     server_url: str = field(default="0.0.0.0", metadata={"help": "Evaluation server URL"})
-    server_port: int = field(default=8000, metadata={"help": "Evaluation server port"})
+    server_port: int = field(default=8020, metadata={"help": "Evaluation server port"})
 
 
 @dataclass

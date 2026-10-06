@@ -64,3 +64,4 @@ motif_rfm,0.95
 roboarena_eval_debug_nowrist,0.90
 roboarena,0.90
 armnetbench,0.95
+icl_dataset,0.95

@@ -11,4 +11,4 @@ max_workers: 8 # Max worker threads (null for auto, typically same as num_gpus)
 # Evaluation parameters
 batch_size: 4  # Batch size for evaluation
 server_url: "0.0.0.0"  # Evaluation server URL
-server_port: 8000  # Evaluation server port
+server_port: 8020  # Evaluation server port (moved off 8000 - see /local_data/as20424/projects/PORTS.md)

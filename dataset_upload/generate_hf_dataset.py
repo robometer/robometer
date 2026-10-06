@@ -417,7 +417,12 @@ def main(cfg: GenerateConfig):
             cfg.hub.hub_repo_id = username + "/" + cfg.hub.hub_repo_id
 
     # Import the appropriate dataset loader and trajectory creator
-    if "libero" in cfg.dataset.dataset_name:
+    if "icl" in cfg.dataset.dataset_name.lower():
+        from dataset_upload.dataset_loaders.icl_loader import load_icl_dataset
+
+        task_data = load_icl_dataset(cfg.dataset.dataset_path)
+        trajectories = flatten_task_data(task_data)
+    elif "libero" in cfg.dataset.dataset_name:
         from dataset_upload.dataset_loaders.libero_loader import load_libero_dataset
 
         # Load the trajectories using the loader

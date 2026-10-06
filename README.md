@@ -1,3 +1,17 @@
+# Changes in this fork
+
+Fine-tuning and scoring of RoboMeter-4B on the ICL dataset, for
+[icvfe-evals](https://github.com/HannibalofBarca/icvfe-evals). Weights:
+[Hannibal52Barca/robometer-4b-icl-finetuned](https://huggingface.co/Hannibal52Barca/robometer-4b-icl-finetuned).
+
+- **ICL dataset support:** loader and configs to fine-tune RoboMeter-4B with LoRA on the ICL dataset, using only
+  episode-level success/fail labels.
+- **Online scoring:** each frame is scored from past frames only, as in a live rollout, alongside upstream's offline
+  whole-episode scoring.
+- **Compatibility fixes** for newer `transformers` (Qwen3-VL) and `torchao`.
+
+---
+
 # Robometer: Scaling General-Purpose Robotic Reward Models via Trajectory Comparisons
 
 [![arXiv](https://img.shields.io/badge/arXiv-2603.02115-b31b1b.svg)](https://arxiv.org/abs/2603.02115)
@@ -83,7 +97,7 @@ Start the eval server on your machine, then call it with a video and task:
 ```bash
 uv run python robometer/evals/eval_server.py \
   server_url=0.0.0.0 \
-  server_port=8000
+  server_port=8020
 ```
 
 Then run the client (no robometer dependency):
@@ -91,21 +105,21 @@ Then run the client (no robometer dependency):
 ```bash
 # SOAR
 uv run python scripts/example_inference.py \
-  --eval-server-url http://localhost:8000 \
+  --eval-server-url http://localhost:8020 \
   --video scripts/example_videos/soar_put_green_stick_in_brown_bowl.mp4 \
   --task "Put green stick in brown bowl" \
   --fps 3
 
 # Berkeley RPT (Wrist)
 uv run python scripts/example_inference.py \
-  --eval-server-url http://localhost:8000 \
+  --eval-server-url http://localhost:8020 \
   --video scripts/example_videos/berkeley_rpt_stack_cup.mp4 \
   --task "Pick up the yellow cup and stack it on the other cup" \
   --fps 3
 
 # Your own video
 uv run python scripts/example_inference.py \
-  --eval-server-url http://localhost:8000 \
+  --eval-server-url http://localhost:8020 \
   --video /path/to/video.mp4 \
   --task "your task description"
 ```

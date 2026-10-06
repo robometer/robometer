@@ -13,13 +13,13 @@ Usage examples:
     uv run --extra vlac --python .venv-vlac/bin/python robometer/evals/baseline_eval_server.py \
         reward_model=vlac \
         model_path=InternRobotics/VLAC \
-        server_port=8010
-    
+        server_port=8021
+
     # RoboReward baseline server
     uv run python robometer/evals/baseline_eval_server.py \
         reward_model=roboreward \
         model_path=teetone/RoboReward-8B \
-        server_port=8003
+        server_port=8022
 
 Endpoints:
   POST /evaluate_batch        - JSON payload with samples

@@ -168,6 +168,11 @@ def forward_model(
                 image_grid_thw=batch_inputs.get("image_grid_thw", None),
                 video_grid_thw=batch_inputs.get("video_grid_thw", None),
                 second_per_grid_ts=batch_inputs.get("second_per_grid_ts", None),
+                # Newer transformers' Qwen3-VL requires this for M-RoPE whenever image/video_grid_thw
+                # is present; the processor/collator already computes it (see progress_inputs keys
+                # in robometer_common.py) -- this call site just wasn't updated to forward it, which
+                # crashed every multimodal forward pass with "mm_token_type_ids is missing".
+                mm_token_type_ids=batch_inputs.get("mm_token_type_ids", None),
                 sample_type=sample_type,
                 timing_raw=None,
             )

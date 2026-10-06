@@ -1,0 +1,31 @@
+# icl-dataset (adityx23/icl-dataset) config -- see dataset_upload/dataset_loaders/icl_loader.py.
+# dataset_path is unused by icl_loader.py (its two real data sources -- fetch_task_catalog and
+# the Robo-Dopamine episode cache -- are fixed locations in the sibling icl_annotations/
+# checkout, not something this config points at), kept only so DatasetConfig has a value.
+dataset:
+  dataset_path: unused
+  dataset_name: icl_dataset
+
+output:
+  output_dir: datasets/icl_rbm
+  max_trajectories: -1
+  max_frames: 32
+  use_video: true
+  # 30fps native (see adityx23/icl-dataset's own meta/info.json) / 10 -- our cache only has
+  # every 10th raw frame (frame_interval=10, see reward_models_common/episode_cache.py), so this
+  # keeps the encoded clip's playback speed matching the original episode's real duration.
+  fps: 3
+  shortest_edge_size: 240
+  center_crop: false
+  num_workers: 16
+
+hub:
+  # Recommended flow per FINETUNE_ROBOMETER.md; also required in practice here --
+  # preprocess_datasets.py's local-disk load path calls datasets.load_dataset(path) directly,
+  # which errors on a save_to_disk() output ("...trying to load a dataset that was saved using
+  # save_to_disk. Please use load_from_disk instead") -- confirmed empirically, not a guess.
+  # Only the Hub-loading branch does the "frames"->"frames_video"/"frames_path" patch this
+  # converter's output needs. Push target is adityx23 (this session's already-authenticated HF
+  # account, same namespace as adityx23/icl-dataset itself), via HF_USERNAME at run time.
+  push_to_hub: true
+  hub_repo_id: icl_rbm

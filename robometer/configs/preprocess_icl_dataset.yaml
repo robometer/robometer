@@ -1,0 +1,41 @@
+# Preprocess config for LoRA fine-tuning RoboMeter on the full icl-dataset (sparse per-episode
+# success/fail labels, ~3044 usable episodes -- see dataset_upload/dataset_loaders/icl_loader.py
+# and dataset_upload/configs/data_gen_configs/icl_dataset.yaml for how adityx23/icl_rbm was
+# built and pushed). Order: 1) generate_hf_dataset (icl_dataset.yaml) -> 2) this preprocess ->
+# 3) train.py.
+#
+# Before running:
+#   export ROBOMETER_PROCESSED_DATASETS_PATH=/path/to/save/processed_datasets
+#
+# For training, data.train_datasets/data.eval_datasets use the cache key with "/" -> "_":
+# "adityx23_icl_rbm_icl_dataset" (matches FINETUNE_ROBOMETER.md's own
+# aliangdw_robofac_rbm_robofac example for aliangdw/robofac_rbm's "robofac" config).
+
+train_datasets:
+  - "adityx23/icl_rbm"
+
+train_subsets:
+  - ["icl_dataset"]
+
+# No held-out eval split was built (single one-shot conversion, not train/val) -- reuse the
+# same dataset for eval, same as FINETUNE_ROBOMETER.md's own worked example.
+eval_datasets:
+  - "adityx23/icl_rbm"
+
+eval_subsets:
+  - ["icl_dataset"]
+
+max_frames_for_preprocessing: 32
+video_frame_sampling: "uniform"
+num_proc: 1
+num_threads: 8
+force_reprocess: false
+# Set this to an absolute path before running (this config is loaded with plain YAML, no env-var
+# interpolation) -- originally <this repo>/processed_datasets.
+cache_dir: CHANGE_ME/robometer_train/processed_datasets
+
+precompute_embeddings: false
+embeddings_cache_dir: "embeddings"
+dinov2_model: "facebook/dinov2-base"
+sentence_model: "sentence-transformers/all-MiniLM-L12-v2"
+embedding_batch_size: 64
